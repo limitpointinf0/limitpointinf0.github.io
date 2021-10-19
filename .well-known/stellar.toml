@@ -1,0 +1,22 @@
+ACCOUNTS=[
+"GCNAJZI5J72NRDSH5L5UOW7QGIFBMIOIHPPZETIYOIKLH4G2WLNNWIFZ",
+"GDBW5DHUHJMAHIZRCOUDGL2AXTCQWQJONXLQICJWJOZOXO6VOOY2P6QM"]
+
+[DOCUMENTATION]
+ORG_NAME="OPSICIAN"
+ORG_DBA="LIMITPOINTINF0"
+ORG_URL="https://limitpointinf0.github.io"
+ORG_DESCRIPTION="We specialize in nothing"
+
+[[PRINCIPALS]]
+name="NOTHINGNESS"
+
+
+[[CURRENCIES]]
+code="NULL"
+issuer="GCNAJZI5J72NRDSH5L5UOW7QGIFBMIOIHPPZETIYOIKLH4G2WLNNWIFZ"
+display_decimals=7
+name="NULLCOIN"
+desc="NULLCOIN is the epitome of nothing"
+conditions="NULL token under Stellar network is the token used for anything and nothing."
+image="https://limitpointinf0.github.io/images/null.svg"
