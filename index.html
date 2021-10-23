@@ -8,9 +8,13 @@
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-freighter-api/1.1.2/index.min.js"></script>
 		<script>
+
 			if (window.freighterApi.isConnected()) {
   				alert("You have Freighter!");
+			} else {
+				alert("You dont have Freigher!");
 			}
+
 			const retrievePublicKey = async () => {
 				let publicKey = "";
 				let error = "";
@@ -45,11 +49,14 @@
 				return network;
 			};
 
-			var publicKey = retrievePublicKey();
-			var network = retrieveNetwork();
-
-			console.log(publicKey);
-			console.log(network);
+			retrievePublicKey()
+			.then( (publicKey) => {
+				console.log(publicKey);
+				retrieveNetwork().then( (network) => {
+					console.log(network);					
+				})
+				.catch((e) => console.log(e));
+			}).catch((e) => console.log(e));
 		</script>
 	</head>
 	<body class="is-preload">
