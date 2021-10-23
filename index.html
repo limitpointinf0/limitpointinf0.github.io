@@ -9,10 +9,9 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/9.0.1/stellar-sdk.js"></script>
 		<script>
 
-			async function getXDR(userAccount){
+			async function getXDR(userAccount, server){
 
 				const customAsset = new StellarSdk.Asset('NULL', 'GCIL22USJAHZMLPUJ2GMBBSQGVH5PWKVUGMVUWCRKRA6Z44DA26HKUK6');
-				const server = new StellarSdk.Server('https://horizon-testnet.stellar.org/');
 				const fee = await server.fetchBaseFee();
 				const txnOpts = {
 					fee: fee,
@@ -40,12 +39,25 @@
 
 							const userAccount = result.publicKey;
 							console.log(`User active public key is: ${userAccount}`);
+
+							const server = new StellarSdk.Server('https://horizon-testnet.stellar.org/');
 							
 							xdr = getXDR(userAccount)
 								.then( xdr => {
 									const network = 'testnet'; // mainnet / testnet
 									rabet.sign(xdr, network)
-										.then(result => console.log(`Signed xdr: ${result.xdr}`))
+										.then(result => {
+											console.log(`Signed xdr: ${result.xdr}`);
+											var transaction = new StellarSdk.Transaction(xdr, StellarSdk.Networks.TESTNET);
+											server
+												.submitTransaction(transaction)
+												.then((result) => {
+													console.log(result);
+												})
+												.catch((e) => {
+													console.log(e.response.data);
+												});
+										})
 										.catch(error => console.error(`Error: ${error.message}`));
 								})
 								.catch(error => console.error(`Error: ${error}`));
