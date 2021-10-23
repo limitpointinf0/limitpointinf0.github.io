@@ -6,14 +6,45 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/9.0.1/stellar-sdk.js"></script>
 		<script>
 
-			function getRabet() {
+			async function getXDR(userAccount){
+				const customAsset = new StellarSdk.Asset('NULL', 'GCIL22USJAHZMLPUJ2GMBBSQGVH5PWKVUGMVUWCRKRA6Z44DA26HKUK6');
+				const server = new StellarSdk.Server('https://horizon-testnet.stellar.org/');
+				const fee = await server.fetchBaseFee();
+				const txnOpts = {
+					fee: fee,
+					networkPassphrase: "Test SDF Network ; September 2015"
+				};
+
+				const changeTrustOpts = {
+					asset: customAsset
+				};
+
+				const userAccountObj = await server.loadAccount(userAccount);
+				const transaction = new StellarSdk.TransactionBuilder(buyerAccount, txnOpts)
+					.addOperation(Stellar.Operation.changeTrust(changeTrustOpts))
+					.setTimeout(0)
+					.build();
+
+				return transaction.toEnvelope().toXDR('base64');
+			}
+
+			async function getNull() {
 				if (window.rabet) {
 					console.log('Rabet is installed!');
 					rabet.connect()
 						.then(result => {
-							console.log(`User active public key is: ${result.publicKey}`);
+
+							const userAccount = result.publicKey;
+							console.log(`User active public key is: ${userAccount}`);
+							
+							getXDR()
+								.then( xdr => {
+									console.log(xdr);
+								})
+								.catch(error => console.error(`Error: ${error}`));
 							// const xdr = 'AAAAAL...'; // Only string
 							// const network = 'testnet'; // mainnet / testnet
 							// rabet.sign(xdr, network)
@@ -22,7 +53,7 @@
 						})
 						.catch(error => console.error(`Error: ${error}`));
 				} else {
-					console.log('Please install Rabet')
+					console.log('Please install Rabet');
 				}
 			}
 			
@@ -47,8 +78,7 @@
 						</div>
 						<nav>
 							<ul>
-								<li><a href="#about">About</a></li>
-								<li><input type="button" onclick="getRabet();">Get It Now</a></li>
+								<li><a href="#about">Get It Now</a></li>
 							</ul>
 						</nav>
 					</header>
@@ -60,9 +90,8 @@
 							<article id="about">
 								<h2 class="major">About</h2>
 								<span><img src="images/qr.png" alt="" /></span>
-								<!-- <img src="assets/images/chart.jpg" alt="hi" /> -->
 								<p><b>Asset Name:</b> NULL</p>
-								<p>NULL token is currently on the Stellar testnet and represents absolutely nothing. </p>
+								<p>NULL token is currently on the Stellar testnet and represents absolutely nothing. To receive this token, you must first create a trustline.</p>
 							</article>
 
 					</div>
