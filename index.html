@@ -28,8 +28,6 @@
 				return publicKey;
 			};
 
-			var result = retrievePublicKey();
-
 			const retrieveNetwork = async () => {
 				let network = "";
 				let error = "";
@@ -47,7 +45,11 @@
 				return network;
 			};
 
-			var result = retrieveNetwork();
+			var publicKey = retrievePublicKey();
+			var network = retrieveNetwork();
+
+			console.log(publicKey);
+			console.log(network);
 		</script>
 	</head>
 	<body class="is-preload">
