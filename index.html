@@ -25,7 +25,7 @@
 				};
 				
 				const userAccountObj = await server.loadAccount(userAccount);
-				const transaction = new StellarSdk.TransactionBuilder(buyerAccount, txnOpts)
+				const transaction = new StellarSdk.TransactionBuilder(userAccountObj, txnOpts)
 					.addOperation(Stellar.Operation.changeTrust(changeTrustOpts))
 					.setTimeout(0)
 					.build();
