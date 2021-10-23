@@ -6,6 +6,49 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-freighter-api/1.1.2/index.min.js"></script>
+		<script>
+			if (window.freighterApi.isConnected()) {
+  				alert("You have Freighter!");
+			}
+			const retrievePublicKey = async () => {
+				let publicKey = "";
+				let error = "";
+
+				try {
+					publicKey = await window.freighterApi.getPublicKey();
+				} catch (e) {
+					error = e;
+				}
+
+				if (error) {
+					return error;
+				}
+
+				return publicKey;
+			};
+
+			const result = retrievePublicKey();
+
+			const retrieveNetwork = async () => {
+				let network = "";
+				let error = "";
+
+				try {
+					network = await window.freighterApi.getNetwork();
+				} catch (e) {
+					error = e;
+				}
+
+				if (error) {
+					return error;
+				}
+
+				return network;
+			};
+
+			const result = retrieveNetwork();
+		</script>
 	</head>
 	<body class="is-preload">
 
