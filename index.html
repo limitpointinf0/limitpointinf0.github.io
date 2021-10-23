@@ -42,7 +42,7 @@
 
 							const server = new StellarSdk.Server('https://horizon-testnet.stellar.org/');
 							
-							xdr = getXDR(userAccount)
+							xdr = getXDR(userAccount, server)
 								.then( xdr => {
 									const network = 'testnet'; // mainnet / testnet
 									rabet.sign(xdr, network)
