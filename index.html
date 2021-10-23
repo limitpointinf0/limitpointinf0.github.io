@@ -48,7 +48,8 @@
 									rabet.sign(xdr, network)
 										.then(result => {
 											console.log(`Signed xdr: ${result.xdr}`);
-											var transaction = new StellarSdk.Transaction(xdr, StellarSdk.Networks.TESTNET);
+											var envelope = StellarSdk.xdr.TransactionEnvelope.fromXDR(result.xdr, 'base64');
+											var transaction = new StellarSdk.Transaction(envelope, StellarSdk.Networks.TESTNET);
 											server
 												.submitTransaction(transaction)
 												.then((result) => {
