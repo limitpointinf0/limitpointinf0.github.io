@@ -11,7 +11,7 @@
 
 			async function getXDR(userAccount){
 				debugger;
-				
+
 				const customAsset = new StellarSdk.Asset('NULL', 'GCIL22USJAHZMLPUJ2GMBBSQGVH5PWKVUGMVUWCRKRA6Z44DA26HKUK6');
 				const server = new StellarSdk.Server('https://horizon-testnet.stellar.org/');
 				const fee = await server.fetchBaseFee();
@@ -42,7 +42,7 @@
 							const userAccount = result.publicKey;
 							console.log(`User active public key is: ${userAccount}`);
 							
-							getXDR();
+							getXDR(userAccount);
 							// const xdr = 'AAAAAL...'; // Only string
 							// const network = 'testnet'; // mainnet / testnet
 							// rabet.sign(xdr, network)
