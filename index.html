@@ -40,11 +40,7 @@
 							const userAccount = result.publicKey;
 							console.log(`User active public key is: ${userAccount}`);
 							
-							getXDR()
-								.then( xdr => {
-									console.log(xdr);
-								})
-								.catch(error => console.error(`Error: ${error}`));
+							getXDR();
 							// const xdr = 'AAAAAL...'; // Only string
 							// const network = 'testnet'; // mainnet / testnet
 							// rabet.sign(xdr, network)
