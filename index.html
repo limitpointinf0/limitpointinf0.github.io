@@ -6,57 +6,26 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-freighter-api/1.1.2/index.min.js"></script>
 		<script>
 
-			if (window.freighterApi.isConnected()) {
-  				alert("You have Freighter!");
-			} else {
-				alert("You dont have Freigher!");
+			function getRabet() {
+				if (window.rabet) {
+					console.log('Rabet is installed!');
+					rabet.connect()
+						.then(result => {
+							console.log(`User active public key is: ${result.publicKey}`);
+							// const xdr = 'AAAAAL...'; // Only string
+							// const network = 'testnet'; // mainnet / testnet
+							// rabet.sign(xdr, network)
+							// 	.then(result => console.log(`Signed xdr: ${result.xdr}`))
+							// 	.catch(error => console.error(`Error: ${error.message}`));
+						})
+						.catch(error => console.error(`Error: ${error}`));
+				} else {
+					console.log('Please install Rabet')
+				}
 			}
-
-			const retrievePublicKey = async () => {
-				let publicKey = "";
-				let error = "";
-
-				try {
-					publicKey = await window.freighterApi.getPublicKey();
-				} catch (e) {
-					error = e;
-				}
-
-				if (error) {
-					return error;
-				}
-
-				return publicKey;
-			};
-
-			const retrieveNetwork = async () => {
-				let network = "";
-				let error = "";
-
-				try {
-					network = await window.freighterApi.getNetwork();
-				} catch (e) {
-					error = e;
-				}
-
-				if (error) {
-					return error;
-				}
-
-				return network;
-			};
-
-			retrievePublicKey()
-			.then( (publicKey) => {
-				console.log(publicKey);
-				retrieveNetwork().then( (network) => {
-					console.log(network);					
-				})
-				.catch((e) => console.log(e));
-			}).catch((e) => console.log(e));
+			
 		</script>
 	</head>
 	<body class="is-preload">
@@ -79,6 +48,7 @@
 						<nav>
 							<ul>
 								<li><a href="#about">About</a></li>
+								<li><a href="" onclick="CapacityChart();">Get It Now</a></li>
 							</ul>
 						</nav>
 					</header>
