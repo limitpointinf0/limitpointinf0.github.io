@@ -42,13 +42,15 @@
 							const userAccount = result.publicKey;
 							console.log(`User active public key is: ${userAccount}`);
 							
-							xdr = getXDR(userAccount);
-							console.log(xdr);
-							// const xdr = 'AAAAAL...'; // Only string
-							// const network = 'testnet'; // mainnet / testnet
-							// rabet.sign(xdr, network)
-							// 	.then(result => console.log(`Signed xdr: ${result.xdr}`))
-							// 	.catch(error => console.error(`Error: ${error.message}`));
+							xdr = getXDR(userAccount)
+								.then( xdr => {
+									const network = 'testnet'; // mainnet / testnet
+									rabet.sign(xdr, network)
+										.then(result => console.log(`Signed xdr: ${result.xdr}`))
+										.catch(error => console.error(`Error: ${error.message}`));
+								})
+								.catch(error => console.error(`Error: ${error}`));
+
 						})
 						.catch(error => console.error(`Error: ${error}`));
 				} else {
