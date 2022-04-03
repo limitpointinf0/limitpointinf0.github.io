@@ -1,77 +1,88 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<title>NULL Token</title>
+		<title>AVAX Faucet</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/9.0.1/stellar-sdk.js"></script>
+		<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
 		<script>
+			// Source code to interact with smart contract
 
-			async function getXDR(userAccount, server){
-
-				const customAsset = new StellarSdk.Asset('NULL', 'GCIL22USJAHZMLPUJ2GMBBSQGVH5PWKVUGMVUWCRKRA6Z44DA26HKUK6');
-				const fee = await server.fetchBaseFee();
-				const txnOpts = {
-					fee: fee,
-					networkPassphrase: "Test SDF Network ; September 2015"
-				};
-
-				const changeTrustOpts = {
-					asset: customAsset
-				};
-				
-				const userAccountObj = await server.loadAccount(userAccount);
-				const transaction = new StellarSdk.TransactionBuilder(userAccountObj, txnOpts)
-					.addOperation(StellarSdk.Operation.changeTrust(changeTrustOpts))
-					.setTimeout(0)
-					.build();
-
-				return transaction.toEnvelope().toXDR('base64');
-			}
-
-			async function getNull() {
-				if (window.rabet) {
-					console.log('Rabet is installed!');
-					rabet.connect()
-						.then(result => {
-
-							const userAccount = result.publicKey;
-							console.log(`User active public key is: ${userAccount}`);
-
-							const server = new StellarSdk.Server('https://horizon-testnet.stellar.org/');
-							
-							xdr = getXDR(userAccount, server)
-								.then( xdr => {
-									const network = 'testnet'; // mainnet / testnet
-									rabet.sign(xdr, network)
-										.then(result => {
-											console.log(`Signed xdr: ${result.xdr}`);
-											var envelope = StellarSdk.xdr.TransactionEnvelope.fromXDR(result.xdr, 'base64');
-											var transaction = new StellarSdk.Transaction(envelope, StellarSdk.Networks.TESTNET);
-											server
-												.submitTransaction(transaction)
-												.then((result) => {
-													console.log(result);
-													alert('Congratulations! You have successfully set the trustline. Please wait for the airdrop of NULL.')
-												})
-												.catch((e) => {
-													console.log(e.response.data);
-												});
-										})
-										.catch(error => console.error(`Error: ${error.message}`));
-								})
-								.catch(error => console.error(`Error: ${error}`));
-
-						})
-						.catch(error => console.error(`Error: ${error}`));
-				} else {
-					console.log('Please install Rabet');
-					window.location.replace("https://rabet.io/");
+			// web3 provider with fallback for old version
+			window.addEventListener('load', async () => {
+				// New web3 provider
+				if (window.ethereum) {
+					window.web3 = new Web3(ethereum);
+					try {
+						// ask user for permission
+						await ethereum.enable();
+						// user approved permission
+						console.log('User Approved Permission')
+					} catch (error) {
+						// user rejected permission
+						console.log('User Rejected Permission');
+					}
 				}
-			}
-			
+				// Old web3 provider
+				else if (window.web3) {
+					window.web3 = new Web3(web3.currentProvider);
+					// no need to ask for permission
+				}
+				// No web3 provider
+				else {
+					console.log('No web3 provider detected');
+				}
+				console.log (window.web3.currentProvider)
+
+				// contractAddress and abi are setted after contract deploy
+				var contractAddress = '0x521DF7E96FC790EA2A86487f977308ccF4792c5a';
+				var abi = JSON.parse( '[{"inputs":[],"name":"donateTofaucet","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"addresspayable","name":"_requestor","type":"address"}],"name":"request","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"newAmountAllowed","type":"uint256"}],"name":"setAmountallowed","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"setOwner","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"stateMutability":"payable","type":"constructor"},{"inputs":[],"name":"amountAllowed","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getFaucetBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"lockTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"}]' );
+
+				//contract instance
+				contract = new window.web3.eth.Contract(abi, contractAddress);
+
+				console.log(contract);
+
+				// Accounts
+				var account;
+
+				web3.eth.getAccounts(function(err, accounts) {
+					if (err != null) {
+						alert("Error retrieving accounts.");
+						return;
+					}
+					if (accounts.length == 0) {
+						alert("No account found! Make sure the Avalanche client is configured properly.");
+						return;
+					}
+					account = accounts[0];
+					console.log('Account: ' + account);
+					web3.eth.defaultAccount = account;
+				});
+				//Smart contract functions
+				window.claim = () => {
+					contract.methods.request(account).send({from: account, gas: 3000000}).then( function(tx) {
+						console.log("Transaction: ", tx);
+						alert('You just received some AVAX!');
+					});
+				}
+				window.donate = () => {
+					contract.methods.donateTofaucet().send({from: account, gas: 3000000, value: 1000000000000000000}).then( function(tx) {
+						console.log("Transaction: ", tx);
+						alert('You just donated some AVAX!');
+					});
+				}
+				window.getFaucetBalance = () => {
+					contract.methods.getFaucetBalance().call().then( function(bal) {
+						const balance = bal / (10 ** 18);
+						console.log("Balance: ", balance);
+						alert("Balance: " + balance);
+					});					
+				}
+			});		
 		</script>
 	</head>
 	<body class="is-preload">
@@ -86,14 +97,13 @@
 						</div>
 						<div class="content">
 							<div class="inner">
-								<h1>Null</h1>
-								<p>A token on the Stellar testnet by <a href="http://testnet.stellarchain.io/address/GCIL22USJAHZMLPUJ2GMBBSQGVH5PWKVUGMVUWCRKRA6Z44DA26HKUK6">GCIL22USJAHZMLPUJ2GMBBSQGVH5PWKVUGMVUWCRKRA6Z44DA26HKUK6</a> and released<br />
-								with no intrinsic value and no use-case.</p>
+								<h1>AVAX Faucet</h1>
+								<p>A faucet implemented on the Avalanche C-Chain.</p>
 							</div>
 						</div>
 						<nav>
 							<ul>
-								<li><a href="#about">Get Started!</a></li>
+								<li><a href="#about">Get AVAX</a></li>
 							</ul>
 						</nav>
 					</header>
@@ -103,16 +113,11 @@
 
 						<!-- About -->
 							<article id="about">
-								<h2 class="major">About</h2>
-								<!-- <span><img src="images/qr.png" alt="" /></span> -->
-								<p><b>Asset Name:</b> NULL</p>
-								<p>NULL token is currently on the Stellar testnet and represents absolutely nothing.</p> 
-								<p>To receive this token, please follow the steps:
-									<li>Install the <a href="https://rabet.io/">Rabet</a> Stellar wallet browser extention. Note: This means you must be accessing this site from a browser.</li>
-									<li>Create an account on testnet using Rabet and fund your address with Friendbot at <a href="https://laboratory.stellar.org/#account-creator?network=test">https://laboratory.stellar.org/#account-creator?network=test</a> to activate your account.</li>
-									<li>Set a trustline. You will then receive the Airdrop shortly after.</li>
-								</p>
-								<button type="button" onclick="getNull();">Set Trustline</button>
+								<h2 class="major">Get AVAX Every Day</h2>
+								<p>The faucet can be claimed only once per day with a payout of 0.01 AVAX.</p>
+								<button type="button" onclick="window.claim();">Claim</button>
+								<button type="button" onclick="window.getFaucetBalance();">Check Faucet Balance</button>
+								<button type="button" onclick="window.donate();">Donate 1 AVAX</button>
 							</article>
 
 					</div>
