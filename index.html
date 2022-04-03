@@ -34,6 +34,7 @@
 				// No web3 provider
 				else {
 					console.log('No web3 provider detected');
+					alert('Metamask browser extension must be installed!');
 				}
 				console.log (window.web3.currentProvider)
 
@@ -115,6 +116,8 @@
 							<article id="about">
 								<h2 class="major">Get AVAX Every Day</h2>
 								<p>The faucet can be claimed only once per day with a payout of 0.01 AVAX.</p>
+								<p><a href="https://hurricaneswap.medium.com/tutorial-for-hurricaneswap-testnet-ce57c14ee652">Add AVAX testnet RPC to Metamask</a></p>
+								<p><a href="https://faucet.avax-test.network/">Get free AVAX on testnet</a></p>
 								<button type="button" onclick="window.claim();">Claim</button>
 								<button type="button" onclick="window.getFaucetBalance();">Check Faucet Balance</button>
 								<button type="button" onclick="window.donate();">Donate 1 AVAX</button>
